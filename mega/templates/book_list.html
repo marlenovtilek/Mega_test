@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список книг</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .messages {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+        }
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+            gap: 20px; /* Расстояние между элементами */
+        }
+        .book-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+        .favorite-button {
+            background-color: #FFC107; /* Жёлтый цвет */
+            margin-left: 10px; /* Отступ слева */
+        }
+        .favorite-button:hover {
+            background-color: #FFB300; /* Более тёмный жёлтый при наведении */
+        }
+        .no-books {
+            color: black;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Список книг</h1>
+
+    {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="book-list">
+        {% for book in books %}
+            <div class="book-item">
+                <strong>Название:</strong> {{ book.title }}<br>
+                <strong>Авторы:</strong> 
+                {% if book.author.all %} 
+                    {% for author in book.author.all %}
+                        {{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Нет авторов
+                {% endif %}<br>
+                <strong>Дата публикации:</strong> {{ book.publication_date|date:'Y-m-d' }}<br>
+                <strong>Жанр:</strong> 
+                {% for genre in book.genre.all %}
+                    {{ genre.name }}{% if not forloop.last %}, {% endif %} 
+                {% endfor %}<br>
+                <a href="{% url 'book_detail' book.id %}">Подробнее</a>
+                {% if book.id in favorite_books %}
+                    <button style="background-color: #FFC107; border: none; cursor: default; padding: 10px 15px; border-radius: 4px;">Уже в избранном</button>
+                {% else %}
+                    <form action="{% url 'add_to_favorites' book.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background-color: yellow; border: none; cursor: pointer; padding: 10px 15px; border-radius: 4px;">В избранное</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="book-item no-books">Книг пока нет</div>
+        {% endfor %}
+    </div>
+    
+
+    <div class="button-container">
+        <a href="{% url 'book_create' %}">Добавить новую книгу</a>
+        <br>
+        <a href="{% url 'index' %}">Назад</a>  
+    </div>
+</body>
+</html>

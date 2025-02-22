@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменить автора: {{ author.first_name }} {{ author.last_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+        }
+        div {
+            margin-bottom: 15px;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Изменить автора: {{ author.first_name }} {{ author.last_name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="first_name">Имя:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ author.first_name }}" required>
+        </div>
+        <div>
+            <label for="last_name">Фамилия:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ author.last_name }}" required>
+        </div>
+        <div>
+            <label for="biography">Биография:</label>
+            <textarea id="biography" name="biography" required>{{ author.biography }}</textarea>
+        </div>
+        <div>
+            <label for="date_of_birth">Дата рождения:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ author.date_of_birth|date:'Y-m-d' }}" required>
+        </div>
+        <div>
+            <label for="date_of_death">Дата смерти (если применимо):</label>
+            <input type="date" id="date_of_death" name="date_of_death" value="{{ author.date_of_death|date:'Y-m-d' }}">
+        </div>
+        <button type="submit">Сохранить изменения</button>
+    </form>
+    <br>
+    <a href="{% url 'author_list' %}">Назад к списку авторов</a>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали книги: {{ book.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .messages {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+        }
+        .book-details {
+            max-width: 600px; /* Установим максимальную ширину */
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        strong {
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+        button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #f44336; /* Красный цвет */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+    <script>
+        function confirmDelete(event) {
+            const confirmed = confirm("Вы уверены, что хотите удалить эту книгу?");
+            if (!confirmed) {
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Детали книги: {{ book.title }}</h1>
+
+    {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="book-details">
+        <strong>Название:</strong> {{ book.title }}<br>
+        <strong>Краткое содержание:</strong> {{ book.summary }}<br>
+        <strong>ISBN:</strong> {{ book.isbn }}<br>
+        <strong>Авторы:</strong>
+        {% if book.author.all %}
+            {% for author in book.author.all %}
+                {{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            Нет авторов
+        {% endif %}<br>
+        <strong>Дата публикации:</strong> {{ book.publication_date|date:'Y-m-d' }}<br>
+        <strong>Жанр:</strong>
+        {% if book.genre.all %}
+            {% for genre in book.genre.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            Нет жанров
+        {% endif %}
+    </div>
+    
+    <a href="{% url 'book_update' book.id %}">Изменить</a>
+    <form action="{% url 'book_delete' book.id %}" method="post" style="display:inline;" onsubmit="confirmDelete(event);">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
+    <br>
+    <a href="{% url 'book_list' %}">Назад к списку книг</a>
+</body>
+</html>

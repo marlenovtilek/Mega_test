@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить новую книгу</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добавить новую книгу</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="id_title">Название:</label>
+        <input type="text" id="id_title" name="title" required>
+
+        <label for="id_summary">Описание:</label>
+        <textarea id="id_summary" name="summary" rows="4" required></textarea> 
+
+        <label for="id_isbn">ISBN:</label>
+        <input type="text" id="id_isbn" name="isbn" required>
+
+        <label for="id_author">Автор(ы):</label>
+        <select id="id_author" name="author" multiple>
+            {% for author in authors %}
+                <option value="{{ author.id }}">{{ author.first_name }} {{ author.last_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="id_publication_date">Дата публикации:</label>
+        <input type="date" id="id_publication_date" name="publication_date" required> 
+
+        <label for="id_genre">Жанр:</label>
+        <select id="id_genre" name="genre" multiple>
+            {% for genre in genres %}
+                <option value="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="button-container">
+            <button type="submit" class="btn">Добавить книгу</button>
+            <br>
+            <a href="{% url 'book_list' %}" class="btn">Отмена</a>
+        </div>
+    </form>
+</body>
+</html>

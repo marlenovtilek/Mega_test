@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список жанров</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .messages {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+        button {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #f44336; /* Красный цвет */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+    <script>
+        function confirmDelete() {
+            return confirm('Вы уверены, что хотите удалить этот жанр?');
+        }
+    </script>
+</head>
+<body>
+    <h1>Список жанров</h1>
+
+    {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <ul>
+        {% for genre in genres %}
+            <li>
+                <strong>{{ forloop.counter }}:</strong> {{ genre.name }}
+                <form action="{% url 'genre_delete' genre.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                    {% csrf_token %}
+                    <button type="submit">Удалить</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>Жанров пока нет</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'genre_create' %}">Добавить жанр</a>
+    <br>
+    <a href="{% url 'index' %}">Назад</a>
+</body>
+</html>
