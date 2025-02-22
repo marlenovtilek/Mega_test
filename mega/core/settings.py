@@ -161,4 +161,6 @@ CELERY_TASK_SERIALIZER = "json"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_FILE_PATH = "/tmp/django-emails" 
 
+CSRF_TRUSTED_ORIGINS = ['https://megatest-production.up.railway.app']
+
 
